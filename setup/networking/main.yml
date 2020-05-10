@@ -1,0 +1,35 @@
+---
+- hosts: k3s_hosts
+  become: yes
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Set the current MAC address hostvar for eth0.
+      set_fact:
+        thishost_mac_address: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+
+    - name: Set variables based on eth0 MAC address.
+      set_fact:
+        thishost_hostname: "{{ mac_address_mapping[thishost_mac_address].name }}"
+        thishost_ip_address: "{{ mac_address_mapping[thishost_mac_address].ip }}"
+
+    - name: Set up networking-related files.
+      template:
+        src: "templates/{{ item.template }}"
+        dest: "{{ item.dest }}"
+        mode: 0644
+      with_items:
+        - { template: hostname.j2, dest: /etc/hostname }
+        - { template: hosts.j2, dest: /etc/hosts }
+        - { template: resolv.conf.j2, dest: /etc/resolv.conf }
+        #- { template: dhcpcd.conf.j2, dest: /etc/dhcpcd.conf } # Not used with recent Ubuntu versions, used
+        - { template: cloud-init.yaml.j2, dest: /etc/netplan/50-cloud-init.yaml }
+      register: files
+
+    - name: Reboot immediately networking files have changed
+      shell: "sleep 5 && reboot"
+      async: 1
+      poll: 0
+      when: files is changed

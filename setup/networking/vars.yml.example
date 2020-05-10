@@ -1,0 +1,27 @@
+---
+# Mapping of what hardware MAC addresses should be configured with specific IPs.
+mac_address_mapping:
+  "aa:bb:cc:dd:ee:ff":
+    name: kube1.your.domain.here
+    ip: "192.168.179.201"
+  "aa:bb:cc:dd:ee:ff":
+    name: kube2.your.domain.here
+    ip: "192.168.179.202"
+  "aa:bb:cc:dd:ee:ff":
+    name: kube3.your.domain.here
+    ip: "192.168.179.203"
+  "aa:bb:cc:dd:ee:ff"":
+    name: kube4.your.domain.here
+    ip: "192.168.179.204"
+
+# Nameservers to use in resolv.conf.
+dns_nameservers:
+  - "1.1.1.1"
+  - "1.0.0.1"
+
+default_gateway_ip: 192.168.179.1
+network_prefix: 192.168.179
+domain_name: your.domain.here
+
+
+

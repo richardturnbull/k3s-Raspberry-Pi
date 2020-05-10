@@ -1,0 +1,16 @@
+# This file describes the network interfaces available on your system
+# For more information, see netplan(5).
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: no
+      # Set IP address & subnet mask
+      addresses: [{{ thishost_ip_address }}/24]
+      # Set default gateway
+      gateway4: {{ default_gateway_ip }}
+      nameservers:
+        # Set DNS name servers
+        addresses: [1.1.1.1, 1.0.0.1]
+      dhcp6: no

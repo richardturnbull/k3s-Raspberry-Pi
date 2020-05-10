@@ -1,0 +1,10 @@
+[k3s_hosts]
+192.168.179.201
+192.168.179.202
+192.168.179.203
+192.168.179.204
+
+[k3s_hosts:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file="~/.ssh/kubes"
+

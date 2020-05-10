@@ -1,0 +1,23 @@
+[masters]
+kube1 ansible_host=192.168.77.2 kubernetes_role=master
+
+[nodes]
+kube2 ansible_host=192.168.77.3 kubernetes_role=node
+kube3 ansible_host=192.168.77.4 kubernetes_role=node
+kube4 ansible_host=192.168.77.5 kubernetes_role=node
+
+[k3scluster:children]
+masters
+nodes
+
+[k3scluster:vars]
+ansible_ssh_user=vagrant
+ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+ansible_python_interpreter=/usr/bin/python3
+deploy_target=vagrant
+
+[masters:vars]
+extra_server_args="--flannel-iface enp0s8 --no-deploy=traefik"
+
+[nodes:vars]
+extra_node_args="--flannel-iface enp0s8"

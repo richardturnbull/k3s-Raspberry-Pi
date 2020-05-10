@@ -1,0 +1,37 @@
+---
+
+# Only required for Rasbian
+# # See https://raspberrypi.stackexchange.com/q/84390/6506
+# - name: Disable swap.
+#   shell: >
+#     dphys-swapfile swapoff &&
+#     dphys-swapfile uninstall &&
+#     update-rc.d -f dphys-swapfile remove
+#   when:
+#     - ansible_swaptotal_mb > 0
+#     - deploy_target == 'pi'
+
+# # RT zap the whole package - it
+# - name: Remove dphys-swapfile package
+#   apt:
+#     autoremove: yes
+#     name:
+#       - dphys-swapfile
+#     state: absent
+#   when:
+#     - ansible_swaptotal_mb > 0
+#     - deploy_target == 'pi'
+
+# swap disabled by default with ubuntu 20.04 on Raspberry
+
+- name: Disable swap
+  command: swapoff -a
+  when:
+    - deploy_target == 'vagrant'
+
+- name: Manage swap file entry in fstab (vagrant only).
+  mount:
+    name: none
+    state: absent
+  when:
+    - deploy_target == 'vagrant'

@@ -1,0 +1,52 @@
+---
+- hosts: all
+  become: true
+
+  vars_files:
+     - vars/main.yml
+  #   - config.yml
+
+  pre_tasks:
+
+    - name: Set the master node IP.
+      set_fact:
+        master_ip: "{{ hostvars['kube1']['ansible_host'] }}"
+      tags: ['always']
+
+    - name: Update apt-cache
+      apt:
+        update-cache: yes
+
+  roles:
+    - role: geerlingguy.security
+      tags: ['security']
+
+    - role: geerlingguy.nfs
+      tags: ['nfs']
+
+  tasks:
+    - include_tasks: tasks/nfs.yml
+    - include_tasks: tasks/host-prereqs.yml
+    - include_tasks: tasks/cgroup_features.yml
+    - include_tasks: tasks/disable-swap.yml
+    - include_tasks: tasks/download.yml
+
+# Master setup
+- hosts: masters
+  become: true
+  vars_files:
+     - vars/main.yml
+
+  tasks:
+    - include_tasks: tasks/master.yml
+    - include_tasks: tasks/get-kubeconfig.yml
+
+# Node setup
+- hosts: nodes
+  become: true
+  vars_files:
+     - vars/main.yml
+
+  tasks:
+    - include_tasks: tasks/node.yml
+

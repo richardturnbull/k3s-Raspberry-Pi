@@ -1,0 +1,12 @@
+.DS_Store
+.vagrant
+*.retry
+roles/geerlingguy.*
+setup/networking/inventory
+setup/networking/vars.yml
+swap.yml
+*-cloudimg-console.log
+kubeconfig
+config
+config-vagrant
+config-pi

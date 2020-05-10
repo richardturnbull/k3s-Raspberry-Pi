@@ -1,0 +1,20 @@
+[masters]
+kube1 ansible_host=192.168.179.201 kubernetes_role=master
+
+[nodes]
+kube2 ansible_host=192.168.179.202 kubernetes_role=node
+kube3 ansible_host=192.168.179.203 kubernetes_role=node
+kube4 ansible_host=192.168.179.204 kubernetes_role=node
+
+[k3scluster:children]
+masters
+nodes
+
+[k3scluster:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/kubes
+ansible_python_interpreter=/usr/bin/python3
+deploy_target=pi
+
+[masters:vars]
+extra_server_args="--no-deploy=traefik"
