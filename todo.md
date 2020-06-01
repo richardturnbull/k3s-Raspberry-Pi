@@ -1,0 +1,1 @@
+- [ ] automate the merging of context files to .kube
