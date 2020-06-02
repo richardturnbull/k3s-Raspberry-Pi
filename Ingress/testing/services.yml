@@ -2,9 +2,7 @@
 #Service app-a
 apiVersion: v1
 kind: Service
-
 metadata:
-  namespace: test-ingress
   name: app-a
   labels:
     app: app-a

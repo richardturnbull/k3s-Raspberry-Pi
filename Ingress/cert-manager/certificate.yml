@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: sandydog-nz-cert
+spec:
+  commonName: sandydog.nz
+  secretName: sandydog-nz-cert
+  dnsNames:
+    - sandydog.nz
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+

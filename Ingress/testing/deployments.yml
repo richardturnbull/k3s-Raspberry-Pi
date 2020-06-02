@@ -6,7 +6,6 @@ metadata:
   name: app-a
   labels:
     app: app-a
-  namespace: test-ingress
 spec:
   replicas: 1
   selector:
@@ -61,7 +60,6 @@ metadata:
   name: app-b
   labels:
     app: app-b
-  namespace: test-ingress
 spec:
   replicas: 1
   selector:

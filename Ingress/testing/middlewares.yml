@@ -1,0 +1,31 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix-a
+
+spec:
+  stripPrefix:
+    prefixes:
+      - /a
+    forceSlash: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix-b
+spec:
+  stripPrefix:
+    prefixes:
+      - /b
+    forceSlash: false
+---
+# Redirect to https
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: https-redirect
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true

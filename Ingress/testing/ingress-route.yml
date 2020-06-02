@@ -1,35 +1,28 @@
 ---
 apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
+kind: IngressRoute
 metadata:
-  name: stripprefix-a
-  namespace: test-ingress
+  name: redirect-to-https
 spec:
-  stripPrefix:
-    prefixes:
-      - /a
-    forceSlash: false
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: stripprefix-b
-  namespace: test-ingress
-spec:
-  stripPrefix:
-    prefixes:
-      - /b
-    forceSlash: false
+  entryPoints:
+  - web
+  routes:
+    - match: HostRegexp(`{host:.+}`)
+      kind: Rule
+      Priority: 10
+      services:
+      - kind: TraefikService
+        name: noop@internal
+      middlewares:
+      - name: https-redirect
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: apps-ab
-  namespace: test-ingress
+  name: apps
 spec:
   entryPoints:
-    - web
-    #- websecure
+    - websecure
   routes:
     - match: Host(`sandydog.nz`) && PathPrefix (`/a`)
       priority: 25
@@ -47,3 +40,5 @@ spec:
           port: 80
       middlewares:
         - name: stripprefix-b
+  tls:
+    secretName: sandydog-nz-cert
