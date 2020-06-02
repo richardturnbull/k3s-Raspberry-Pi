@@ -1,0 +1,49 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix-a
+  namespace: test-ingress
+spec:
+  stripPrefix:
+    prefixes:
+      - /a
+    forceSlash: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix-b
+  namespace: test-ingress
+spec:
+  stripPrefix:
+    prefixes:
+      - /b
+    forceSlash: false
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: apps-ab
+  namespace: test-ingress
+spec:
+  entryPoints:
+    - web
+    #- websecure
+  routes:
+    - match: Host(`sandydog.nz`) && PathPrefix (`/a`)
+      priority: 25
+      kind: Rule
+      services:
+        - name: app-a
+          port: 80
+      middlewares:
+        - name: stripprefix-a
+    - match: Host(`sandydog.nz`) && PathPrefix (`/b`)
+      priority: 30
+      kind: Rule
+      services:
+        - name: app-b
+          port: 80
+      middlewares:
+        - name: stripprefix-b

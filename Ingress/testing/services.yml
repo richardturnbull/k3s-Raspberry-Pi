@@ -1,0 +1,30 @@
+---
+#Service app-a
+apiVersion: v1
+kind: Service
+
+metadata:
+  namespace: test-ingress
+  name: app-a
+  labels:
+    app: app-a
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: app-a
+  type: ClusterIP
+---
+#Service app-b
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-b
+  labels:
+    app: app-b
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: app-b
+  type: ClusterIP

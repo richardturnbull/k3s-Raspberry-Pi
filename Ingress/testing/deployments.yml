@@ -1,0 +1,111 @@
+# Deployment app-a
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-a
+  labels:
+    app: app-a
+  namespace: test-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-a
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: app-a
+    spec:
+      containers:
+        - image: nginx
+          imagePullPolicy: IfNotPresent
+          name: app-a
+          ports:
+          - containerPort: 80
+          resources:
+            limits:
+              cpu: '1'
+              memory: '512Mi'
+            requests:
+              cpu: '500m'
+              memory: '256Mi'
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: config-volume
+      volumes:
+        - name: config-volume
+          configMap:
+            name: index-a
+
+      tolerations:
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 30
+      - effect: NoExecute
+        key: node.kubernetes.io/unreachable
+        operator: Exists
+        tolerationSeconds: 30
+
+# Deployment app-b
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-b
+  labels:
+    app: app-b
+  namespace: test-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-b
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: app-b
+    spec:
+      containers:
+        - image: nginx
+          imagePullPolicy: IfNotPresent
+          name: app-b
+          ports:
+          - containerPort: 80
+          resources:
+            limits:
+              cpu: '1'
+              memory: '512Mi'
+            requests:
+              cpu: '500m'
+              memory: '256Mi'
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: config-volume
+      volumes:
+        - name: config-volume
+          configMap:
+            name: index-b
+
+      tolerations:
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 30
+      - effect: NoExecute
+        key: node.kubernetes.io/unreachable
+        operator: Exists
+        tolerationSeconds: 30
+
+
