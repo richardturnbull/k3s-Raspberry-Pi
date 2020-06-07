@@ -13,9 +13,9 @@
       mode: 755
   when: deploy_target == 'vagrant'
 
-- name: Download k3s binary armhf
+- name: Download k3s binary arm64
   get_url:
-      url: https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s-armhf
+      url: https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s-arm64
       dest: /usr/local/bin/k3s
       owner: root
       group: root
