@@ -65,4 +65,7 @@ kube1   Ready    master   15h   v1.17.5+k3s1
 ```
 
 ## Vagrant
-For testing, there is a Vagrantfile which will bring up a 4-node cluster based on Ubtuntu. Run `vagrant up` to bring up the cluster.
+For testing, there is a Vagrantfile which will bring up a 4-node cluster based on Ubtuntu. Run `vagrant up` to birng up the VM's and `docker-ansible ansible-playbook -i inventory.vagrant main.yml` to configure the cluster
+
+## Docker
+A Dockerfile is provided, to allow the use of ansible without a local install

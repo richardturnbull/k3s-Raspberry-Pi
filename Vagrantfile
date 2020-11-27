@@ -33,16 +33,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       config.vm.network :private_network, ip: opts[:ip]
 
       #Provision all the VMs using Ansible after last VM is up.
-      if index == boxes.size - 1
-        config.vm.provision "ansible" do |ansible|
-          ansible.compatibility_mode = "2.0"
-          ansible.playbook = "main.yml"
-          ansible.inventory_path = "inventory.vagrant"
-          ansible.limit = "all"
-          # ansible.raw_arguments = ["-vvv"]
-          # ansible.tags = "nfs"
-        end
-      end
+      # if index == boxes.size - 1
+      #   config.vm.provision "ansible" do |ansible|
+      #     ansible.compatibility_mode = "2.0"
+      #     ansible.playbook = "main.yml"
+      #     ansible.inventory_path = "inventory.vagrant"
+      #     ansible.limit = "all"
+      #     # ansible.raw_arguments = ["-vvv"]
+      #     # ansible.tags = "nfs"
+      #   end
+      # end
     end
   end
 end
