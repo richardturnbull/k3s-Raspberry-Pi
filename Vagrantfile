@@ -4,8 +4,10 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  #config.vm.box = "geerlingguy/debian10"
-  config.vm.box = "ubuntu/focal64"
+  # config.vm.box = "ubuntu/focal64"
+  # config.vm.box_version = "20200627.0.0"
+  # config.vm.box = "generic/ubuntu2004"
+  config.vm.box = "bento/ubuntu-20.04"
   config.ssh.insert_key = false
   config.vm.provider "virtualbox"
 

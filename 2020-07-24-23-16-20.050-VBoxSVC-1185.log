@@ -1,0 +1,5 @@
+Log created: 2020-07-24T23:16:20.500077000Z
+Process ID:  1185 (0x4a1)
+Parent PID:  1 (0x1)
+Executable:  /Applications/VirtualBox.app/Contents/MacOS/VBoxSVC
+AddRef: illegal refcnt=3221225469 state=2

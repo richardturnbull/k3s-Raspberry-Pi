@@ -17,7 +17,9 @@ ansible_python_interpreter=/usr/bin/python3
 deploy_target=vagrant
 
 [masters:vars]
-extra_server_args="--flannel-iface enp0s8 --no-deploy=traefik"
+#extra_server_args="--flannel-iface enp0s8 --no-deploy=traefik"
+extra_server_args="--flannel-iface eth1 --no-deploy=traefik"
 
 [nodes:vars]
-extra_node_args="--flannel-iface enp0s8"
+#extra_node_args="--flannel-iface enp0s8"
+extra_node_args="--flannel-iface eth1"
