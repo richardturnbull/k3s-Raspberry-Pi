@@ -8,11 +8,14 @@ metadata:
     app: app-a
 spec:
   ports:
-    - port: 80
+    - port: 8080
+    -targehPort:80
   selector:
     app: app-a
-  type: ClusterIP
+  type: LoadBalancer
+
 ---
+
 #Service app-b
 apiVersion: v1
 kind: Service
@@ -22,7 +25,7 @@ metadata:
     app: app-b
 spec:
   ports:
-    - port: 80
+    - port: 8081
   selector:
     app: app-b
-  type: ClusterIP
+  type: LoadBalancer

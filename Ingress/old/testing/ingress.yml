@@ -1,0 +1,27 @@
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: apps
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sandydog.nz`) && PathPrefix (`/a`)
+      priority: 25
+      kind: Rule
+      services:
+        - name: app-a
+          port: 80
+      middlewares:
+        - name: stripprefix-a
+    - match: Host(`sandydog.nz`) && PathPrefix (`/b`)
+      priority: 30
+      kind: Rule
+      services:
+        - name: app-b
+          port: 80
+      middlewares:
+        - name: stripprefix-b
+  tls:
+    secretName: sandydog-nz-cert

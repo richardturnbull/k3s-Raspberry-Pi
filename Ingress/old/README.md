@@ -20,7 +20,7 @@ helm install --namespace=traefik-v2  traefik traefik/traefik --values=traefik-va
 
 ```
 
-To access dashboard: `kubectl port-forward $(kubectl get pods --selector "app.kubernetes.io/name=traefik" --output=name) 9000:9000`
+To access dashboard: `kubectl port-forward $(kubectl get pods --selector "app.kubernetes.io/name=traefik" --output=name --namespace traefik-v2) 9000:9000`
 
 then navigate to [http://localhost:9000/dashboard/](http://localhost:9000/dashboard/)
 

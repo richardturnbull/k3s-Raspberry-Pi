@@ -1,0 +1,237 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: lbtest
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: index-a
+  namespace: lbtest
+data:
+  index.html: |
+    <html>
+    <head><title>App A</title>
+      <style>
+        html {
+          font-size: 62.5%;
+        }
+        body {
+          font-family: sans-serif;
+          background-color: midnightblue;
+          color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          height: 100vh;
+        }
+        div {
+          text-align: center;
+          font-size: 8rem;
+          text-shadow: 3px 3px 4px dimgrey;
+        }
+      </style>
+    </head>
+    <body>
+      <div>This is App A</div>
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: index-b
+  namespace: lbtest
+data:
+  index.html: |
+    <html>
+    <head><title>App B</title>
+      <style>
+        html {
+          font-size: 62.5%;
+        }
+        body {
+          font-family: sans-serif;
+          background-color: rgb(153, 52, 91);
+          color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          height: 100vh;
+        }
+        div {
+          text-align: center;
+          font-size: 8rem;
+          text-shadow: 3px 3px 4px dimgrey;
+        }
+      </style>
+    </head>
+    <body>
+      <div>This is App B</div>
+    </body>
+    </html>
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-a
+  namespace: lbtest
+  labels:
+    app: app-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-a
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: app-a
+    spec:
+      containers:
+        - image: nginx
+          imagePullPolicy: IfNotPresent
+          name: app-a
+          ports:
+          - containerPort: 80
+          resources:
+            limits:
+              cpu: '1'
+              memory: '512Mi'
+            requests:
+              cpu: '500m'
+              memory: '256Mi'
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/a
+              name: config-volume
+      volumes:
+        - name: config-volume
+          configMap:
+            name: index-a
+
+      tolerations:
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 30
+      - effect: NoExecute
+        key: node.kubernetes.io/unreachable
+        operator: Exists
+        tolerationSeconds: 30
+
+# Deployment app-b
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-b
+  namespace: lbtest
+  labels:
+    app: app-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-b
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: app-b
+    spec:
+      containers:
+        - image: nginx
+          imagePullPolicy: IfNotPresent
+          name: app-b
+          ports:
+          - containerPort: 80
+          resources:
+            limits:
+              cpu: '1'
+              memory: '512Mi'
+            requests:
+              cpu: '500m'
+              memory: '256Mi'
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/b
+              name: config-volume
+      volumes:
+        - name: config-volume
+          configMap:
+            name: index-b
+
+      tolerations:
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 30
+      - effect: NoExecute
+        key: node.kubernetes.io/unreachable
+        operator: Exists
+        tolerationSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-a
+  namespace: lbtest
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: app-a
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-b
+  namespace: lbtest
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: app-b
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: lbtest-ingress
+  namespace: lbtest
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /a
+            pathType: Prefix
+            backend:
+              service:
+                name: app-a
+                port:
+                  number: 80
+          - path: /b
+            pathType: Prefix
+            backend:
+              service:
+                name: app-b
+                port:
+                  number: 80
+
