@@ -5,7 +5,7 @@ nfs_mount_dir: /mnt/nfs # defined in global vars file.
 nfs_extra_dirs:
 
 # k3s
-k3s_version: v1.19.4+k3s1
+k3s_version: v1.21.2+k3s1
 
 # host config
 systemd_dir: /etc/systemd/system
